@@ -12,7 +12,9 @@ env/
 .vscode/
 .idea/
 .env/
-config/
+
+#remove config.py
+config.py
 
 # Logs
 *.log
