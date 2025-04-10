@@ -8,7 +8,7 @@ class Config:
     PDFKIT_CONFIG = {
         'wkhtmltopdf': os.environ.get("WKHTMLTOPDF_PATH") or "/usr/local/bin/wkhtmltopdf"
     }
-    # Hugging Face API (replace with your own API token if needed)
-    HF_API_TOKEN = os.environ.get("HF_API_TOKEN") or "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"
-    HF_MODEL = "google/flan-t5-base"  # free model for demonstration purposes
+    # # Hugging Face API (replace with your own API token if needed)
+    # HF_API_TOKEN = os.environ.get("HF_API_TOKEN") or "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"
+    # HF_MODEL = "google/flan-t5-base"  # free model for demonstration purposes
     GEMINI_API_KEY = "AIzaSyDx69uXZN6xmofcGEZj7d2AL_96Oqdh1Oc"
