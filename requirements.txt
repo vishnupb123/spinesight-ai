@@ -1,0 +1,7 @@
+Flask==2.2.5
+joblib
+numpy
+pandas
+plotly
+pdfkit
+requests

@@ -1,0 +1,49 @@
+<!-- templates/report_bulk.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bulk Prediction Report</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .header { text-align: center; }
+    .section { margin-bottom: 20px; }
+    .table { width: 100%; border-collapse: collapse; }
+    .table th, .table td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Bulk Prediction Report</h1>
+  </div>
+  <div class="section">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Patient #</th>
+          <th>Input Data</th>
+          <th>Prediction</th>
+          <th>Confidence</th>
+          <th>Message</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for result in results %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>
+            {% for key, value in result.input.items() %}
+              {{ key }}: {{ value }}<br>
+            {% endfor %}
+          </td>
+          <td>{{ result.prediction }}</td>
+          <td>{{ result.confidence }}%</td>
+          <td>{{ result.message }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      
+    </table>
+  </div>
+</body>
+</html>

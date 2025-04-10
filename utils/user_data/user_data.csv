@@ -1,0 +1,16 @@
+pelvic_incidence,pelvic_tilt,lumbar_lordosis_angle,sacral_slope,pelvic_radius,degree_spondylolisthesis,prediction,confidence,ai_message,timestamp
+63.36,33.28,39.61,40.48,98.67,2.23,Normal,59.90850154415972,Your spine alignment appears normal. Keep maintaining a healthy lifestyle!,2025-04-10 21:06:46
+63.36,33.28,39.61,40.48,98.67,2.23,Hernia,50.03343734534115,Signs of herniated disc detected. Consider a clinical consultation for further evaluation.,2025-04-10 21:08:44
+67.36,50.28,24.61,67.48,107.67,3.23,Hernia,55.50051488530667,Signs of herniated disc detected. Consider a clinical consultation for further evaluation.,2025-04-10 21:09:32
+67.36,50.28,24.61,64.48,89.67,11.23,Hernia,50.644892003354016,Signs of herniated disc detected. Consider a clinical consultation for further evaluation.,2025-04-10 21:10:16
+72.36,55.28,25.61,70.48,89.67,11.23,Hernia,52.46990579549835,Signs of herniated disc detected. Consider a clinical consultation for further evaluation.,2025-04-10 21:10:44
+72.36,55.28,25.61,70.48,89.67,13.23,Spondylolisthesis,50.32181763789432,Warning: Potential spondylolisthesis detected. Please consult a spine specialist promptly.,2025-04-10 21:11:13
+72.36,55.28,25.61,70.48,89.67,16.23,Spondylolisthesis,54.85257789083175,Warning: Potential spondylolisthesis detected. Please consult a spine specialist promptly.,2025-04-10 21:11:20
+63.36,33.28,67.5,43.34,98.67,2.23,Hernia,65.09161795635141,Signs of herniated disc detected. Consider a clinical consultation for further evaluation.,2025-04-10 23:41:41
+67.51,33.28,25.12,34.24,131.0,2.23,Hernia,52.6155245971482,Signs of herniated disc detected. Consider a clinical consultation for further evaluation.,2025-04-10 23:55:35
+67.51,33.28,25.12,34.24,131.0,2.23,Hernia,52.6155245971482,Signs of herniated disc detected. Consider a clinical consultation for further evaluation.,2025-04-10 23:56:20
+76.31,22.55,39.61,44.24,132.27,2.23,Normal,80.19942064142828,Your spine alignment appears normal. Keep maintaining a healthy lifestyle!,2025-04-10 23:56:48
+63.36,33.28,67.5,34.38,130.33,2.23,Hernia,64.77916564822158,Signs of herniated disc detected. Consider a clinical consultation for further evaluation.,2025-04-10 23:58:02
+63.36,20.02,39.61,43.34,132.27,2.23,Normal,98.52410821616776,Your spine alignment appears normal. Keep maintaining a healthy lifestyle!,2025-04-11 00:06:43
+63.36,20.02,39.61,43.34,132.27,2.23,Normal,22.744510247336063,Your spine alignment appears normal. Keep maintaining a healthy lifestyle!,2025-04-11 00:07:22
+50.91,78.0,96.28,40.48,130.33,3.76,Hernia,60.472853985168626,Signs of herniated disc detected. Consider a clinical consultation for further evaluation.,2025-04-11 00:13:04
