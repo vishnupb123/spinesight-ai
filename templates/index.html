@@ -7,13 +7,30 @@
       <div>
         <h4 class="mb-3">Patient Data Prediction</h4>
         <form id="prediction-form" action="{{ url_for('predict') }}" method="POST">
-          {% for feature in ['pelvic_incidence', 'pelvic_tilt', 'lumbar_lordosis_angle', 'sacral_slope', 'pelvic_radius', 'degree_spondylolisthesis'] %}
+          {% for feature in ['pelvic_incidence', 'pelvic_tilt', 'lumbar_lordosis_angle', 'sacral_slope', 'pelvic_radius', 'degree_spondylolisthesis', 'age'] %}
           <div class="mb-2">
             <label class="form-label">{{ feature.replace('_', ' ').title() }}</label>
             <input type="number" step="any" class="form-control feature-input" id="{{ feature }}" name="{{ feature }}"
               value="{{ input_features[feature] if input_features.get(feature) }}" required>
           </div>
           {% endfor %}
+
+          <div class="mb-2">
+            <label class="form-label">Gender</label>
+            <select class="form-select" id="gender" name="gender" required>
+              <option value="Male" {% if input_features.get('gender') == 'Male' %}selected{% endif %}>Male</option>
+              <option value="Female" {% if input_features.get('gender') == 'Female' %}selected{% endif %}>Female</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Abdominal Pain</label>
+            <select class="form-select" id="abdominal_pain" name="abdominal_pain" required>
+              <option value="Yes" {% if input_features.get('abdominal_pain') == 'Yes' %}selected{% endif %}>Yes</option>
+              <option value="No" {% if input_features.get('abdominal_pain') == 'No' %}selected{% endif %}>No</option>
+            </select>
+          </div>
+
           <div class="mb-3">
             <label class="form-label">Select Model</label>
             <select class="form-select" name="model" id="model-select">
@@ -32,9 +49,11 @@
 
         {% if prediction_text %}
         <form id="report-form" action="{{ url_for('download_report') }}" method="POST">
-          {% for feature in ['pelvic_incidence', 'pelvic_tilt', 'lumbar_lordosis_angle', 'sacral_slope', 'pelvic_radius', 'degree_spondylolisthesis'] %}
+          {% for feature in ['pelvic_incidence', 'pelvic_tilt', 'lumbar_lordosis_angle', 'sacral_slope', 'pelvic_radius', 'degree_spondylolisthesis', 'age'] %}
           <input type="hidden" name="{{ feature }}" value="{{ input_features[feature] }}">
           {% endfor %}
+          <input type="hidden" name="gender" value="{{ input_features['gender'] }}">
+          <input type="hidden" name="abdominal_pain" value="{{ input_features['abdominal_pain'] }}">
           <input type="hidden" name="result" value="{{ prediction_text }}">
           <input type="hidden" name="confidence" value="{{ confidence_score }}">
           <input type="hidden" name="message" value="{{ prediction_message }}">
@@ -76,11 +95,13 @@
     </div>
   </div>
 </div>
-<!-- Loader Div (Place this right before the closing </body> tag) -->
+
+<!-- Loader Div -->
 <div id="loader" style="display:none;">
   <div class="spinner"></div>
 </div>
-<!-- JavaScript to Restore Inputs and Update Chart Colors -->
+
+<!-- JavaScript for Chart Logic -->
 <script>
   const medicalThresholds = {
     'pelvic_incidence': [30, 70],
@@ -88,7 +109,8 @@
     'lumbar_lordosis_angle': [20, 75],
     'sacral_slope': [20, 60],
     'pelvic_radius': [90, 150],
-    'degree_spondylolisthesis': [-10, 5]
+    'degree_spondylolisthesis': [-10, 5],
+    'age': [20, 80]
   };
 
   const chartLabels = Object.keys(medicalThresholds);
@@ -115,18 +137,14 @@
     }
   });
 
-  // Show the loader when the form is submitted
-  document.getElementById("prediction-form").addEventListener("submit", function(event) {
-  // Show loader when the form is submitted
-  document.getElementById("loader").style.display = "flex";
-});
+  document.getElementById("prediction-form").addEventListener("submit", function() {
+    document.getElementById("loader").style.display = "flex";
+  });
 
-// Hide the loader after the response is received (You can customize this according to your Flask response)
-window.onload = function() {
-  document.getElementById("loader").style.display = "none";  // Hide loader on page load
-}
+  window.onload = function() {
+    document.getElementById("loader").style.display = "none";
+  }
 
-  // Real-time chart updates when user enters input
   document.querySelectorAll('.feature-input').forEach(input => {
     input.addEventListener('input', () => {
       const val = parseFloat(input.value);
@@ -134,28 +152,25 @@ window.onload = function() {
       if (idx !== -1) {
         featureChart.data.datasets[0].data[idx] = val;
         const [min, max] = medicalThresholds[input.id];
-        featureChart.data.datasets[0].backgroundColor[idx] = (val < min || val > max) ?  '#f59a9d':'#aeebbe' ;
+        featureChart.data.datasets[0].backgroundColor[idx] = (val < min || val > max) ? '#f59a9d' : '#aeebbe';
         featureChart.update();
       }
     });
   });
 
-  // Restore values + chart colors on load (after prediction)
-  // {% if input_features and input_features|length > 0 %}
-    const restoredValues = JSON.parse('{{ input_features | tojson | safe }}');
-    Object.entries(restoredValues).forEach(([feature, value]) => {
-      const inputEl = document.getElementById(feature);
-      if (inputEl) {
-        inputEl.value = value;
-        const idx = chartLabels.indexOf(feature);
-        if (idx !== -1) {
-          featureChart.data.datasets[0].data[idx] = parseFloat(value);
-          const [min, max] = medicalThresholds[feature];
-          featureChart.data.datasets[0].backgroundColor[idx] = (value < min || value > max) ? '#f59a9d':'#aeebbe';
-        }
+  const restoredValues = JSON.parse('{{ input_features | tojson | safe }}');
+  Object.entries(restoredValues).forEach(([feature, value]) => {
+    const inputEl = document.getElementById(feature);
+    if (inputEl) {
+      inputEl.value = value;
+      const idx = chartLabels.indexOf(feature);
+      if (idx !== -1) {
+        featureChart.data.datasets[0].data[idx] = parseFloat(value);
+        const [min, max] = medicalThresholds[feature];
+        featureChart.data.datasets[0].backgroundColor[idx] = (value < min || value > max) ? '#f59a9d' : '#aeebbe';
       }
-    });
-    featureChart.update();
-  // {% endif %}
+    }
+  });
+  featureChart.update();
 </script>
 {% endblock %}

@@ -27,14 +27,15 @@ app.secret_key = session_secret_key
 # List of expected input features
 input_features = [
     'pelvic_incidence', 'pelvic_tilt', 'lumbar_lordosis_angle',
-    'sacral_slope', 'pelvic_radius', 'degree_spondylolisthesis'
+    'sacral_slope', 'pelvic_radius', 'degree_spondylolisthesis',
+    'age', 'gender', 'abdominal_pain'
 ]
 
 # Load models and transformers
-lr_model = joblib.load('models/lr_spinal.pkl')
+lr_model = joblib.load('models/spine_lr.pkl')
 svc_model = joblib.load('models/spine_svc.pkl')
 rf_model = joblib.load('models/spine_rf.pkl')
-scaler = joblib.load('models/scaler_std.pkl')
+scaler = joblib.load('models/scaler.pkl')
 power_transformer = joblib.load('models/power_transformer.pkl')
 
 # Labels for prediction display: (Result, Bootstrap color class, Message)
@@ -54,41 +55,49 @@ def categorize_slip(degree):
         return 'Severe'
 
 def preprocess_input(input_data: dict, model_type: str = 'lr_svc') -> np.ndarray:
-    """Preprocess the input data according to training logic."""
-    df = pd.DataFrame([input_data])[input_features].astype(float)
+    df = pd.DataFrame([input_data])[input_features].copy()
+    
+    # Cast types
+    df['gender'] = 1 if str(df['gender'].iloc[0]).lower() in ['male', 'm', '1'] else 0
+    df['abdominal_pain'] = 1 if str(df['abdominal_pain'].iloc[0]).lower() in ['yes', '1', 'true'] else 0
+    df['age'] = df['age'].astype(float)
 
-    # Clip negative values as per training logic
+    # Clean up
+    df[['pelvic_incidence', 'pelvic_tilt', 'lumbar_lordosis_angle',
+        'sacral_slope', 'pelvic_radius', 'degree_spondylolisthesis']] = \
+        df[['pelvic_incidence', 'pelvic_tilt', 'lumbar_lordosis_angle',
+            'sacral_slope', 'pelvic_radius', 'degree_spondylolisthesis']].astype(float)
+
+    # Clip & transform
     df['pelvic_tilt'] = df['pelvic_tilt'].clip(lower=0)
     df['sacral_slope'] = df['sacral_slope'].clip(lower=0)
     df['degree_spondylolisthesis'] = df['degree_spondylolisthesis'].clip(lower=0)
-
-    # Power transform pelvic_tilt and pelvic_radius
     df[['pelvic_tilt', 'pelvic_radius']] = power_transformer.transform(df[['pelvic_tilt', 'pelvic_radius']])
 
-    # Slip category one-hot encoding
+    # Categorize slip
     slip_cat = categorize_slip(df['degree_spondylolisthesis'].values[0])
     df['slip_Mild'] = int(slip_cat == 'Mild')
     df['slip_Normal'] = int(slip_cat == 'Normal')
     df['slip_Severe'] = int(slip_cat == 'Severe')
 
     if model_type == 'lr_svc':
-        # Log-transform degree_spondylolisthesis and drop original
         df['degree_spondylolisthesis_log'] = np.log1p(df['degree_spondylolisthesis'])
         df.drop(columns=['degree_spondylolisthesis'], inplace=True)
         final_features = [
             'pelvic_incidence', 'pelvic_tilt', 'lumbar_lordosis_angle',
-            'sacral_slope', 'pelvic_radius', 'slip_Mild', 'slip_Normal',
-            'slip_Severe', 'degree_spondylolisthesis_log'
+            'sacral_slope', 'pelvic_radius', 'age', 'gender', 'abdominal_pain',
+            'slip_Mild', 'slip_Normal', 'slip_Severe', 'degree_spondylolisthesis_log'
         ]
         return scaler.transform(df[final_features])
     else:
-        # For Random Forest, no scaling or log transform is applied
         final_features = [
             'pelvic_incidence', 'pelvic_tilt', 'lumbar_lordosis_angle',
             'sacral_slope', 'pelvic_radius', 'degree_spondylolisthesis',
+            'age', 'gender', 'abdominal_pain',
             'slip_Mild', 'slip_Normal', 'slip_Severe'
         ]
         return df[final_features].values
+
 
 @app.route('/')
 def index():
@@ -119,7 +128,11 @@ def index():
 def predict():
     try:
         # Gather user input
-        input_data = {feature: float(request.form[feature]) for feature in input_features}
+        input_data = {
+        feature: request.form[feature] if feature in ['gender', 'abdominal_pain']
+        else float(request.form[feature])
+        for feature in input_features
+        }
         model_choice = request.form['model']
 
         if model_choice == 'lr':
@@ -230,7 +243,11 @@ def download_report():
     try:
         # After a single prediction, generate a detailed PDF report
         # Get data from hidden fields in form if needed; here we assume it's sent as JSON string or individual fields.
-        input_data = {feature: float(request.form[feature]) for feature in input_features}
+        input_data = {
+            feature: request.form[feature] if feature in ['gender', 'abdominal_pain']
+            else float(request.form[feature])
+            for feature in input_features
+        }
         result = request.form.get("result")
         confidence = request.form.get("confidence")
         message = request.form.get("message")
@@ -318,4 +335,4 @@ def download_history():
     )
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=8000 , debug=True)

@@ -19,3 +19,14 @@ pelvic_incidence,pelvic_tilt,lumbar_lordosis_angle,sacral_slope,pelvic_radius,de
 67.36,22.55,96.28,34.38,132.27,37.56,Spondylolisthesis,100.0,Warning: Potential spondylolisthesis detected. Please consult a spine specialist promptly.,2025-04-11 10:17:12
 60.25,13.92,14.1,40.48,132.27,2.23,Normal,98.03368043939795,Your spine alignment appears normal. Keep maintaining a healthy lifestyle!,2025-04-12 21:25:12
 76.31,22.55,96.28,40.48,98.67,2.23,Hernia,53.44058116045859,Signs of herniated disc detected. Consider a clinical consultation for further evaluation.,2025-04-15 19:42:27
+55.0,40.0,27.0,62.0,18.0,80.0,Spondylolisthesis,99.12512891760377,Warning: Potential spondylolisthesis detected. Please consult a spine specialist promptly.,2025-04-16 17:34:53
+60.3,12.8794,36.289,60.45,117.99,54.248,Spondylolisthesis,97.1629528839617,Warning: Potential spondylolisthesis detected. Please consult a spine specialist promptly.,2025-04-20 08:34:36
+70.36,33.28,39.61,40.48,98.67,5.0,Hernia,85.4822178605936,Signs of herniated disc detected. Consider a clinical consultation for further evaluation.,2025-04-26 14:41:51
+63.36,33.28,93.28,40.48,132.27,88.3,Spondylolisthesis,99.98433038617772,Warning: Potential spondylolisthesis detected. Please consult a spine specialist promptly.,2025-07-11 15:18:04
+63.36,41.93,25.12,30.0,98.67,2.23,Spondylolisthesis,22.06067301483238,Warning: Potential spondylolisthesis detected. Please consult a spine specialist promptly.,2025-07-12 20:21:59
+63.36,41.93,25.12,30.0,98.67,4.23,Spondylolisthesis,21.91633231903974,Warning: Potential spondylolisthesis detected. Please consult a spine specialist promptly.,2025-07-12 20:22:22
+63.36,41.93,25.12,30.0,98.67,4.23,Hernia,84.66973842757379,Signs of herniated disc detected. Consider a clinical consultation for further evaluation.,2025-07-12 20:22:29
+67.51,41.93,93.28,40.48,98.67,2.23,Spondylolisthesis,48.333261436584294,Warning: Potential spondylolisthesis detected. Please consult a spine specialist promptly.,2025-07-12 20:29:10
+67.51,41.93,93.28,40.48,98.67,2.23,Hernia,83.97893911778091,Signs of herniated disc detected. Consider a clinical consultation for further evaluation.,2025-07-12 20:29:23
+63.36,22.55,96.28,34.38,132.27,15.0,18.0,Male,Yes,Hernia,69.51806084009291,Signs of herniated disc detected. Consider a clinical consultation for further evaluation.,2025-07-25 14:29:24
+67.51,20.02,39.61,43.34,132.27,37.56,21.0,Male,Yes,Hernia,60.25029942741398,Signs of herniated disc detected. Consider a clinical consultation for further evaluation.,2025-07-25 14:30:23
