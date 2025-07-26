@@ -1,0 +1,176 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container-fluid h-100">
+  <div class="row h-100">
+    <!-- Left Column: Form -->
+    <div class="col-lg-4 p-3 d-flex flex-column justify-content-between">
+      <div>
+        <h4 class="mb-3">Patient Data Prediction</h4>
+        <form id="prediction-form" action="{{ url_for('predict') }}" method="POST">
+          {% for feature in ['pelvic_incidence', 'pelvic_tilt', 'lumbar_lordosis_angle', 'sacral_slope', 'pelvic_radius', 'degree_spondylolisthesis', 'age'] %}
+          <div class="mb-2">
+            <label class="form-label">{{ feature.replace('_', ' ').title() }}</label>
+            <input type="number" step="any" class="form-control feature-input" id="{{ feature }}" name="{{ feature }}"
+              value="{{ input_features[feature] if input_features.get(feature) }}" required>
+          </div>
+          {% endfor %}
+
+          <div class="mb-2">
+            <label class="form-label">Gender</label>
+            <select class="form-select" id="gender" name="gender" required>
+              <option value="Male" {% if input_features.get('gender') == 'Male' %}selected{% endif %}>Male</option>
+              <option value="Female" {% if input_features.get('gender') == 'Female' %}selected{% endif %}>Female</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Abdominal Pain</label>
+            <select class="form-select" id="abdominal_pain" name="abdominal_pain" required>
+              <option value="Yes" {% if input_features.get('abdominal_pain') == 'Yes' %}selected{% endif %}>Yes</option>
+              <option value="No" {% if input_features.get('abdominal_pain') == 'No' %}selected{% endif %}>No</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Select Model</label>
+            <select class="form-select" name="model" id="model-select">
+              <option value="lr" {% if selected_model == 'lr' %}selected{% endif %}>Logistic Regression</option>
+              <option value="svc" {% if selected_model == 'svc' %}selected{% endif %}>Support Vector Classifier</option>
+              <option value="rf" {% if selected_model == 'rf' %}selected{% endif %}>Random Forest</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Predict</button>
+        </form>
+
+        <div id="model-info-box" class="alert alert-info mt-3 small">
+          <strong>Model Info:</strong>
+          <div id="model-info-text">Logistic Regression is a simple and interpretable model used for classification tasks.</div>
+        </div>
+
+        {% if prediction_text %}
+        <form id="report-form" action="{{ url_for('download_report') }}" method="POST">
+          {% for feature in ['pelvic_incidence', 'pelvic_tilt', 'lumbar_lordosis_angle', 'sacral_slope', 'pelvic_radius', 'degree_spondylolisthesis', 'age'] %}
+          <input type="hidden" name="{{ feature }}" value="{{ input_features[feature] }}">
+          {% endfor %}
+          <input type="hidden" name="gender" value="{{ input_features['gender'] }}">
+          <input type="hidden" name="abdominal_pain" value="{{ input_features['abdominal_pain'] }}">
+          <input type="hidden" name="result" value="{{ prediction_text }}">
+          <input type="hidden" name="confidence" value="{{ confidence_score }}">
+          <input type="hidden" name="message" value="{{ prediction_message }}">
+          <input type="hidden" name="ai_verdict" value="{{ ai_verdict }}">
+          <button type="submit" class="btn btn-outline-secondary w-100 mt-3">Download Report (PDF)</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right Column: Charts + Result -->
+    <div class="col-lg-8 p-3 d-flex flex-column justify-content-between">
+      <!-- Real-time Feature Chart -->
+      <div class="chart-container mb-3">
+        <canvas id="featureChart" height="120"></canvas>
+      </div>
+
+      <!-- Radar + Bar Graph in One Row -->
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div id="fig" class="viz-box small-box">{{ fig_div|safe }}</div>
+        </div>
+        <div class="col-md-6">
+          <div id="radar_chart" class="viz-box small-box">{{ radar_chart_div|safe }}</div>
+        </div>
+      </div>
+
+      <!-- Prediction Result -->
+      {% if prediction_text %}
+      <div class="alert alert-{{ prediction_color }} mt-3 mb-1">
+        <strong>{{ prediction_text }}</strong><br>
+        Confidence: {{ confidence_score }}%<br>
+        <small>{{ prediction_message }}</small>
+      </div>
+      <div class="alert alert-secondary mt-1 mb-2">
+        <strong>AI Recommendation:</strong> {{ ai_verdict }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Loader Div -->
+<div id="loader" style="display:none;">
+  <div class="spinner"></div>
+</div>
+
+<!-- JavaScript for Chart Logic -->
+<script>
+  const medicalThresholds = {
+    'pelvic_incidence': [30, 70],
+    'pelvic_tilt': [5, 35],
+    'lumbar_lordosis_angle': [20, 75],
+    'sacral_slope': [20, 60],
+    'pelvic_radius': [90, 150],
+    'degree_spondylolisthesis': [-10, 5],
+    'age': [20, 80]
+  };
+
+  const chartLabels = Object.keys(medicalThresholds);
+  const chartData = chartLabels.map(() => 0);
+  const backgroundColors = chartLabels.map(() => '#28a745');
+
+  const ctx = document.getElementById('featureChart').getContext('2d');
+  const featureChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: chartLabels,
+      datasets: [{
+        label: 'Input Feature Value',
+        data: chartData,
+        backgroundColor: backgroundColors
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
+  document.getElementById("prediction-form").addEventListener("submit", function() {
+    document.getElementById("loader").style.display = "flex";
+  });
+
+  window.onload = function() {
+    document.getElementById("loader").style.display = "none";
+  }
+
+  document.querySelectorAll('.feature-input').forEach(input => {
+    input.addEventListener('input', () => {
+      const val = parseFloat(input.value);
+      const idx = chartLabels.indexOf(input.id);
+      if (idx !== -1) {
+        featureChart.data.datasets[0].data[idx] = val;
+        const [min, max] = medicalThresholds[input.id];
+        featureChart.data.datasets[0].backgroundColor[idx] = (val < min || val > max) ? '#f59a9d' : '#aeebbe';
+        featureChart.update();
+      }
+    });
+  });
+
+  const restoredValues = JSON.parse('{{ input_features | tojson | safe }}');
+  Object.entries(restoredValues).forEach(([feature, value]) => {
+    const inputEl = document.getElementById(feature);
+    if (inputEl) {
+      inputEl.value = value;
+      const idx = chartLabels.indexOf(feature);
+      if (idx !== -1) {
+        featureChart.data.datasets[0].data[idx] = parseFloat(value);
+        const [min, max] = medicalThresholds[feature];
+        featureChart.data.datasets[0].backgroundColor[idx] = (value < min || value > max) ? '#f59a9d' : '#aeebbe';
+      }
+    }
+  });
+  featureChart.update();
+</script>
+{% endblock %}

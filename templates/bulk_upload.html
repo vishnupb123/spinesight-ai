@@ -1,0 +1,42 @@
+<!-- templates/bulk_upload.html -->
+{% extends "layout.html" %}
+{% block content %}
+<div class="container-fluid">
+  <h2 class="mb-4 text-dark">Bulk Patient Data Upload</h2>
+  <div class="bg-white shadow rounded p-4">
+    <form action="{{ url_for('bulk_upload') }}" method="POST" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label for="csv_file" class="form-label">Upload CSV File</label>
+        <input type="file" class="form-control" name="csv_file" id="csv_file" accept=".csv" required>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Upload & Predict</button>
+    </form>
+  </div>
+
+  {% if results %}
+  <div class="mt-5">
+    <h5 class="text-muted mb-3">Prediction Results</h5>
+    <div class="table-responsive bg-white shadow-sm rounded">
+      <table class="table table-striped">
+        <thead class="table-light">
+          <tr>
+            {% for col in results[0].keys() %}
+            <th>{{ col }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in results %}
+          <tr>
+            {% for val in row.values() %}
+            <td>{{ val }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

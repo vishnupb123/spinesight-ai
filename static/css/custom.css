@@ -1,0 +1,204 @@
+/* Global Layout */
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #f8fafc;
+    font-family: 'Segoe UI', sans-serif;
+    color: #212529;
+    font-size: 15px;
+  }
+  
+  h4 {
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+  
+  /* Container & Grid */
+  .container-fluid {
+    height: 100%;
+    padding: 0 20px;
+  }
+  
+  .row {
+    height: 100%;
+  }
+  
+  /* Sidebar Form Column */
+  form label {
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+  }
+  
+  form input,
+  form select {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+  form{
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  }
+  /* .content{
+    width: 75vw;;
+  }
+  .sidebar{
+    width:12vw;
+    padding: 10px;
+  } */
+  form .btn  {
+    padding: 10px;
+    font-weight: 600;
+    /* background-color: #aeebbe; */
+  }
+  /* .logo{
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+    font-size: 14px;
+  } */
+  /* Alert Boxes */
+  .alert {
+    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: 5px;
+  }
+  
+  .alert strong {
+    font-weight: 600;
+  }
+  
+  /* Chart Container */
+  .chart-container {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 15px;
+    height: 180px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  }
+  
+  /* Radar and Plotly Chart Containers */
+  .viz-box {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 10px;
+    height: 280px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  }
+
+  .row g-3{
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: auto !important;
+  }
+  .row {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: auto !important;
+  }
+  
+  .small-box {
+    height: 270px;
+  }
+  
+  #radar_chart > div, #fig > div {
+    height: 100% !important;
+  }
+  
+  /* Report Download */
+  #report-form .btn {
+    margin-top: 10px;
+  }
+  
+  /* Model Info Box */
+  #model-info-box {
+    font-size: 13px;
+    margin-top: 15px;
+    border-left: 4px solid #0d6efd;
+    background: #e7f1ff;
+    padding: 10px 12px;
+  }
+  /* Loader styles */
+#loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+  /* Responsive Layout */
+  @media (max-width: 991.98px) {
+    .chart-container {
+      height: 200px;
+    }
+    .viz-box {
+      height: 250px;
+    }
+    .small-box {
+      height: 240px;
+    }
+  }
+  
+  @media (max-width: 767.98px) {
+    .row {
+      flex-direction: column;
+    }
+  
+    .chart-container,
+    .viz-box {
+      height: 240px;
+    }
+  
+    .small-box {
+      height: 230px;
+    }
+  }
+  
+  /* Form & Select Field Styling */
+  .form-label {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .form-select {
+    font-size: 14px;
+  }
+  
+  #model-select {
+    margin-top: -2px;
+  }
+  
+  /* Chart Colors on Hover */
+  canvas {
+    transition: all 0.3s ease-in-out;
+  }
+  
+  canvas:hover {
+    transform: scale(1.01);
+  }
+  
