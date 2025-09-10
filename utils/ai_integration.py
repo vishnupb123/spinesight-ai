@@ -7,9 +7,9 @@ import requests
 
 import google.generativeai as genai
 # from config import Config
-class Config{
-    GEMINI_API_KEY : "AIzaSyDx69uXZN6xmofcGEZj7d2AL_96Oqdh1Oc"
-}
+
+GEMINI_API_KEY = "AIzaSyDx69uXZN6xmofcGEZj7d2AL_96Oqdh1Oc"
+
 
 def get_ai_verdict(prediction: str, input_data: dict, model_message: str) -> str:
     prompt = (
@@ -20,7 +20,7 @@ def get_ai_verdict(prediction: str, input_data: dict, model_message: str) -> str
 
     try:
         # Configure Gemini
-        genai.configure(api_key=Config.GEMINI_API_KEY)
+        genai.configure(api_key=GEMINI_API_KEY)
 
         # Load Gemini Flash model (optimized for fast inference)
         model = genai.GenerativeModel(model_name="models/gemini-1.5-flash-latest")
