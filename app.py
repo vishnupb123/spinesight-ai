@@ -17,7 +17,12 @@ from utils.visualization_utils import generate_comparison_bar_chart, generate_ra
 from utils.utils import get_records 
 
 
-from config import Config
+# from config import Config
+class Config:
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'default-secret')
+    PDFKIT_CONFIG = {
+        'wkhtmltopdf': os.environ.get('WKHTMLTOPDF_PATH', '/usr/local/bin/wkhtmltopdf')
+    }
 
 app = Flask(__name__)
 app.config.from_object(Config)
