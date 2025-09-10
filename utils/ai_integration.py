@@ -1,12 +1,15 @@
 # utils/ai_integration.py
 import requests
 import json
-from config import Config
+# from config import Config
 
 import requests
 
 import google.generativeai as genai
-from config import Config
+# from config import Config
+class Config{
+    GEMINI_API_KEY : "AIzaSyDx69uXZN6xmofcGEZj7d2AL_96Oqdh1Oc"
+}
 
 def get_ai_verdict(prediction: str, input_data: dict, model_message: str) -> str:
     prompt = (
